@@ -27,7 +27,7 @@ $ spsm --help
 
 ## Connecting to the database
 
-All of this tool's commands require accessing the database on the project's secure PostgreSQL server. For this, you'll need two things:
+For downloading data from the project's secure PostgreSQL server, you'll need two things:
 
 1. A terminal running in the background, in which the remote PostgreSQL server's port is being rerouted to your computer's port 54321.
 2. A user profile on the server, which has been granted permissions to select from tables.
@@ -35,7 +35,7 @@ All of this tool's commands require accessing the database on the project's secu
 At the start of every command, you'll be prompted to enter the information about connecting to the remote database.
 
 ```console
-$ spsm COMMAND
+$ spsm remote COMMAND
 Username: YOUR.USERNAME
 Password: YOUR-PASSWORD
 
@@ -45,7 +45,7 @@ Connection to PostgreSQL DB at port 54321 successful :)
 If you don't want to be prompted, you can enter them directly as options after `spsm`.
 
 ```
-$ spsm --username 'YOUR.USERNAME' --password YOUR-PASSWORD COMMAND
+$ spsm remote --username 'YOUR.USERNAME' --password YOUR-PASSWORD COMMAND
 ```
 
 ## Commands
@@ -77,3 +77,5 @@ Downloading... ⠙ 0:00:08
 
 Table downloaded to CSV file 'downloads/claims_2023-11-15.csv.gz'.
 ```
+
+## Build local DuckDB database
