@@ -5,7 +5,7 @@ Command-line tool for downloading data from the SPSM project's PostgreSQL databa
 ## Table of contents
 
 - [Installation](#install-the-tool)
-- [Downloading from remote](#remote-postgresql-database-for-export)
+- [Downloading from remote database](#remote-postgresql-database-for-export)
   - [Download tables](#download-tables)
 - [Working with data on local database](#local-duckdb-database-for-analysis)
 
