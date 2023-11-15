@@ -65,7 +65,7 @@ $ spsm --username 'firstname.lastname' --config config.yml download-tables
 To download an entire table onto your computer and/or disk, run the following command:
 
 ```console
-spsm download-tables
+$ spsm download-tables
 ```
 
 You will be prompted to enter the name of the table you want to download and the directory in which you want to store the compressed file.
