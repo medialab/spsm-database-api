@@ -55,13 +55,13 @@ $ spsm --username 'YOUR.USERNAME' --password YOUR-PASSWORD COMMAND
 To download an entire table onto your computer and/or disk, run the following command:
 
 ```console
-$ spsm download-tables
+$ spsm remote download-tables
 ```
 
 You will be prompted to enter the name of the table you want to download and the directory in which you want to store the compressed file.
 
 ```console
-$ spsm download-tables
+$ spsm remote download-tables
 Username: YOUR.USERNAME
 Password: YOUR-PASSWORD
 
