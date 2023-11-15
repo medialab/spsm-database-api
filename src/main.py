@@ -1,49 +1,47 @@
 import click
-import yaml
 
 from src.connect import connect_to_database
+from src.constants import (
+    POSTGRESQL_DB_NAME,
+    POSTGRESQL_REROUTED_HOST,
+    POSTGRESQL_REROUTED_PORT,
+)
 from src.download_table import download_table
 
 
 @click.group()
-@click.option("--username", required=False, type=click.STRING)
+@click.option("--database", default=POSTGRESQL_DB_NAME)
+@click.option("--host", default=POSTGRESQL_REROUTED_HOST)
+@click.option("--port", default=POSTGRESQL_REROUTED_PORT)
+@click.option("--username", prompt=True, hide_input=False, type=click.STRING)
 @click.option(
-    "--config", required=False, type=click.Path(file_okay=True, dir_okay=False)
+    "--password",
+    prompt=True,
+    hide_input=True,
+    default="",
+    type=str,
 )
 @click.pass_context
-def cli(ctx, username, config):
+def cli(ctx, username, password, database, host, port):
     ctx.ensure_object(dict)
-    if not username:
-        username = click.prompt("Enter your username", type=str)
-    if not config:
-        config = click.prompt(
-            "Enter the path to your configuration YAML file",
-            type=click.Path(file_okay=True, dir_okay=False),
-        )
-
-    with open(config, "r") as f:
-        info = yaml.safe_load(f)
-        ctx.obj["POSTGRES_CONNECTION"] = connect_to_database(info, username)
+    ctx.obj["POSTGRES_CONNECTION"] = connect_to_database(
+        username, password, database, port, host
+    )
 
 
 @cli.command("download-tables")
 @click.pass_context
-@click.option("--table", required=False, type=click.STRING)
+@click.option(
+    "--table", prompt=True, type=click.STRING, help="Name of the table to download"
+)
 @click.option(
     "--download-directory",
-    required=False,
+    prompt=True,
     type=click.Path(dir_okay=True, file_okay=False),
+    help="Path to the directory in which you want to download the compressed table",
 )
 def download_tables(ctx, table, download_directory):
     connection = ctx.obj["POSTGRES_CONNECTION"]
-    if not table:
-        table = click.prompt("Enter the name of the table to download", type=str)
-    if not download_directory:
-        download_directory = click.prompt(
-            "Enter the path to the directory in which you want to download the compressed table",
-            type=click.Path(file_okay=False, dir_okay=True),
-        )
-
     download_table(
         connection=connection, table=table, download_directory=download_directory
     )

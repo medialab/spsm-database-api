@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import Tuple
 
 from psycopg2.extensions import connection as Connection
+from rich import print
+from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
 progress = Progress(
@@ -24,7 +26,12 @@ def download_table(connection: Connection, table: str, download_directory: str):
     if not outfile:
         raise FileNotFoundError
 
-    print(f"\nTable: '{table}'\nSize: {table_size} {size_unit}\n")
+    print(
+        Panel.fit(
+            f"table: '{table}'\nsize: {table_size} {size_unit}",
+            title="[yellow]Downloading",
+        )
+    )
 
     cursor = connection.cursor()
     with progress as p, gzip.open(outfile, "wb") as f:

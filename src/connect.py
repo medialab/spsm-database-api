@@ -1,22 +1,19 @@
-from typing import Dict
-
 import psycopg2
 import psycopg2.extensions
 from psycopg2 import OperationalError
 from psycopg2.extensions import connection as Connection
 
 
-def connect_to_database(yaml: Dict, username: str) -> Connection:
-    config = yaml["connection"]
-    port = config["db_port"]
-
+def connect_to_database(
+    username: str, password: str, database: str, port: str, host: str
+) -> Connection:
     try:
         connection = psycopg2.connect(
-            database=config["db_name"],
+            database=database,
             user=username,
-            password=config["db_password"],
-            host=config["db_host"],
-            port=config["db_port"],
+            password=password,
+            host=host,
+            port=port,
         )
         print(f"\nConnection to PostgreSQL DB at port {port} successful :)\n")
     except OperationalError as e:

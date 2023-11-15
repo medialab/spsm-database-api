@@ -27,27 +27,17 @@ $ spsm --help
 
 ## Connecting to the database
 
-All of this tool's commands require accessing the database on the project's secure PostgreSQL server. For this, you'll need three things:
+All of this tool's commands require accessing the database on the project's secure PostgreSQL server. For this, you'll need two things:
 
 1. A terminal running in the background, in which the remote PostgreSQL server's port is being rerouted to your computer's port 54321.
-2. The username of your profile on the server.
-3. A YAML configuration file that includes the following information:
+2. A user profile on the server, which has been granted permissions to select from tables.
 
-```yaml
----
-connection:
-  db_name: "spsm-database"
-  db_password: "YOUR PASSWORD"
-  db_port: "54321"
-  db_host: "localhost"
-```
-
-At the start of every command, you'll be prompted to enter the same information.
+At the start of every command, you'll be prompted to enter the information about connecting to the remote database.
 
 ```console
-$ spsm download-tables
-Enter your username: firstname.lastname
-Enter the path to your configuration YAML file: config.yml
+$ spsm COMMAND
+Username: YOUR.USERNAME
+Password: YOUR-PASSWORD
 
 Connection to PostgreSQL DB at port 54321 successful :)
 ```
@@ -55,7 +45,7 @@ Connection to PostgreSQL DB at port 54321 successful :)
 If you don't want to be prompted, you can enter them directly as options after `spsm`.
 
 ```
-$ spsm --username 'firstname.lastname' --config config.yml download-tables
+$ spsm --username 'YOUR.USERNAME' --password YOUR-PASSWORD COMMAND
 ```
 
 ## Commands
@@ -72,13 +62,13 @@ You will be prompted to enter the name of the table you want to download and the
 
 ```console
 $ spsm download-tables
-Enter your username: firstname.lastname
-Enter the path to your configuration YAML file: config.yml
+Username: YOUR.USERNAME
+Password: YOUR-PASSWORD
 
 Connection to PostgreSQL DB at port 54321 successful :)
 
-Enter the name of the table to download: claims
-Enter the path to the directory in which you want to download the compressed table: ./downloads
+Table: claims
+Download directory: ./downloads
 
 Table: 'claims'
 Size: 193 MB
