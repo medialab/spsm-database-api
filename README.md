@@ -5,7 +5,7 @@ Command-line tool for downloading data from the SPSM project's PostgreSQL databa
 ## Table of contents
 
 - [Installation](#install-the-tool)
-- [Remote database](#connecting-to-the-database)
+- [Remote database](#remote-postgresql-database-for-export)
   - [Download tables](#download-tables)
 - [Local database](#local-duckdb-database-for-analysis)
 
@@ -25,7 +25,7 @@ pip install https://github.com/medialab/spsm-database-api.git
 $ spsm --help
 ```
 
-## Connecting to the database
+## Remote PostgreSQL database (for export)
 
 For downloading data from the project's secure PostgreSQL server, you'll need two things:
 
@@ -76,4 +76,4 @@ Downloading... ⠙ 0:00:08
 Table downloaded to CSV file 'downloads/claims_2023-11-15.csv.gz'.
 ```
 
-## Local DuckDB database for analysis
+## Local DuckDB database (for analysis)
