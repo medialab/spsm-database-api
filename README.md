@@ -69,11 +69,11 @@ Connection to PostgreSQL DB at port 54321 successful :)
 
 Table: claims
 Download directory: ./downloads
-
-Table: 'claims'
-Size: 193 MB
-
-Downloading... ⠏ 0:00:03
+╭── Downloading ──╮
+│ table: 'claims' │
+│ size: 193 MB    │
+╰─────────────────╯
+Downloading... ⠙ 0:00:08
 
 Table downloaded to CSV file 'downloads/claims_2023-11-15.csv.gz'.
 ```
