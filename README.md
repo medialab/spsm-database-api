@@ -4,10 +4,10 @@ Command-line tool for downloading data from the SPSM project's PostgreSQL databa
 
 ## Table of contents
 
-1. [Installation](#install-the-tool)
-2. [Configuration](#connecting-to-the-database)
-3. [Commands](#commands)
-   1. [Download tables](#download-tables)
+- [Installation](#install-the-tool)
+- [Remote database](#connecting-to-the-database)
+  - [Download tables](#download-tables)
+- [Local database](#local-duckdb-database-for-analysis)
 
 ## Install the tool
 
@@ -48,8 +48,6 @@ If you don't want to be prompted, you can enter them directly as options after `
 $ spsm remote --username 'YOUR.USERNAME' --password YOUR-PASSWORD COMMAND
 ```
 
-## Commands
-
 ### Download tables
 
 To download an entire table onto your computer and/or disk, run the following command:
@@ -78,4 +76,4 @@ Downloading... ⠙ 0:00:08
 Table downloaded to CSV file 'downloads/claims_2023-11-15.csv.gz'.
 ```
 
-## Build local DuckDB database
+## Local DuckDB database for analysis
