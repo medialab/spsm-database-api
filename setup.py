@@ -19,6 +19,8 @@ setup(
         "Pygments==2.16.1",
         "PyYAML==6.0.1",
         "rich==13.6.0",
+        "sqlalchemy==2.0.23",
+        "typing-extensions==4.8.0",
     ],
     entry_points={
         "console_scripts": ["spsm=src.main:cli"],

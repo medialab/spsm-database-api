@@ -1,22 +1,26 @@
-import psycopg2
-import psycopg2.extensions
-from psycopg2 import OperationalError
-from psycopg2.extensions import connection as Connection
+from rich.console import Console
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+
+from src.download.download_params import DownloadParams
 
 
-def connect_to_database(
-    username: str, password: str, database: str, port: str, host: str
-) -> Connection:
+def connect_to_database(params: DownloadParams):
+    url = URL.create(
+        drivername="postgresql",
+        username=params.username,
+        host=params.host,
+        database=params.database,
+        password=params.password,
+        port=params.port,
+    )
+
     try:
-        connection = psycopg2.connect(
-            database=database,
-            user=username,
-            password=password,
-            host=host,
-            port=port,
-        )
-        print(f"\nConnection to PostgreSQL DB at port {port} successful :)\n")
-    except OperationalError as e:
-        print(f"\nThe error {e} occured.\nConnection at port {port} failed.")
+        engine = create_engine(url)
+    except Exception as e:
         raise e
-    return connection
+    else:
+        console = Console()
+        console.clear()
+        console.rule("[bold blue]Connected to the PostgreSQL database")
+        return engine

@@ -1,5 +1,4 @@
 import click
-import duckdb
 
 from src.connect import connect_to_database
 from src.constants import (
@@ -7,7 +6,11 @@ from src.constants import (
     POSTGRESQL_REROUTED_HOST,
     POSTGRESQL_REROUTED_PORT,
 )
-from src.download_table import download_table
+from src.download.download_columns import DownloadColumns
+from src.download.download_params import DownloadParams
+from src.download.download_table import DownloadTable
+from src.local.run_query import execute_query
+from src.local.setup_db import DB
 
 
 @click.group()
@@ -15,68 +18,96 @@ def cli():
     pass
 
 
+# ---------------------------------------- #
+# ----------- DOWNLOAD COMMAND ----------- #
 @cli.group()
 @click.option("--database", default=POSTGRESQL_DB_NAME)
 @click.option("--host", default=POSTGRESQL_REROUTED_HOST)
 @click.option("--port", default=POSTGRESQL_REROUTED_PORT)
-@click.option("--username", prompt=True, hide_input=False, type=click.STRING)
+@click.option("--username", type=click.STRING)
+@click.option("--password", type=click.STRING)
+@click.option("--download-directory", type=click.Path(file_okay=False, dir_okay=True))
+@click.pass_context
+def download(ctx, username, password, database, host, port, download_directory):
+    ctx.ensure_object(dict)
+    params = DownloadParams(
+        username, password, database, host, port, download_directory
+    )
+    ctx.obj["SQL_ENGINE"] = connect_to_database(params)
+    ctx.obj["DOWNLOAD_DIRECTORY"] = params.download_directory
+
+
+# ----------- DOWNLOAD COMMAND ----------- #
+# ----------- TABLE SUBCOMMAND ----------- #
+@download.command("table")
 @click.option(
-    "--password",
-    prompt=True,
-    hide_input=True,
+    "--table",
+    type=click.STRING,
     default="",
     show_default=False,
-    type=str,
+    help="Name of the table to download",
 )
 @click.pass_context
-def remote(ctx, username, password, database, host, port):
-    ctx.ensure_object(dict)
-    ctx.obj["POSTGRES_CONNECTION"] = connect_to_database(
-        username, password, database, port, host
+def download_tables(ctx, table):
+    engine = ctx.obj["SQL_ENGINE"]
+    download_directory = ctx.obj["DOWNLOAD_DIRECTORY"]
+    DownloadTable(
+        engine=engine, table_name=table, download_directory=download_directory
     )
 
 
-@remote.command("download-tables")
+# ----------- DOWNLOAD COMMAND ----------- #
+# ---------- COLUMNS SUBCOMMAND ---------- #
+@download.command("columns")
+@click.option(
+    "--table",
+    type=click.STRING,
+    default="",
+    show_default=False,
+    help="Name of the table to download",
+)
 @click.pass_context
-@click.option(
-    "--table", prompt=True, type=click.STRING, help="Name of the table to download"
-)
-@click.option(
-    "--download-directory",
-    prompt=True,
-    type=click.Path(dir_okay=True, file_okay=False),
-    help="Path to the directory in which you want to download the compressed table",
-)
-def download_tables(ctx, table, download_directory):
-    connection = ctx.obj["POSTGRES_CONNECTION"]
-    download_table(
-        connection=connection, table=table, download_directory=download_directory
+def download_select_columns(ctx, table):
+    engine = ctx.obj["SQL_ENGINE"]
+    download_directory = ctx.obj["DOWNLOAD_DIRECTORY"]
+    DownloadColumns(
+        engine=engine, table_name=table, download_directory=download_directory
     )
 
 
+# ---------------------------------------- #
+# ------------- LOCAL COMMAND ------------ #
 @cli.group("local")
 @click.option(
     "--database",
-    prompt="""
-Path to the local DuckDB database. If you want to
-process everything in memory, without creating a,
-file, press enter for the default path ':memory:'.
-    """,
     type=str,
-    default=":memory:",
+    required=False,
     show_default=True,
 )
 @click.pass_context
 def local(ctx, database):
     ctx.ensure_object(dict)
-    connection = duckdb.connect(database)
-    ctx.obj["DUCKDB_CONNECTION"] = connection
+    db = DB(db_path=database)
+    ctx.obj["DUCKDB_DB"] = db
 
 
+# ------------- LOCAL COMMAND ------------ #
+# ----------- QUERY SUBCOMMAND ----------- #
 @local.command()
+@click.option(
+    "--query",
+    prompt="Path to SQL file",
+    type=click.Path(file_okay=True, dir_okay=False),
+)
+@click.option(
+    "--outfile",
+    prompt="Path to out-file",
+    type=click.Path(file_okay=True, dir_okay=False),
+)
 @click.pass_context
-def query(ctx):
-    pass
+def query(ctx, query, outfile):
+    db = ctx.obj["DUCKDB_DB"]
+    execute_query(query_file=query, db=db, outfile=outfile)
 
 
 if __name__ == "__main__":
