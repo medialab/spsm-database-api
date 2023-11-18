@@ -76,6 +76,8 @@ First, as in the [`spsm download table`](#download-an-entire-table) command, the
 
 Then, you'll be asked to begin entering the columns you want to download.
 
+![download columns](doc/img/download_columns.gif)
+
 ## Local DuckDB database (for analysis)
 
 DuckDB is another SQL database manager, different from PostgreSQL. Wherease PostgreSQL is good for storing data, especially on a server, DuckDB is excellent at excuting queries. It's much faster than PostgreSQL and it's what's called an "embedded" system, like SQLite, which means it stores all of the database in a single file. Contrary to PostgreSQL, DuckDB doesn't use a server.
