@@ -34,6 +34,8 @@ For downloading data from the project's secure PostgreSQL server, you'll need tw
 1. A terminal running in the background, in which the remote PostgreSQL server's port is being rerouted to your computer's port 54321.
 2. A user profile on the server, which has been granted permissions to select from tables.
 
+Start downloading with `spsm download SUBCOMMAND`. After which, the terminal will prompt you to enter information necessary for all data downloads.
+
 ![download command](doc/img/download.gif)
 
 If you don't want to be prompted, you can enter the information directly as options after `spsm download`.
@@ -50,7 +52,11 @@ To download an entire table onto your computer and/or disk, run the following co
 $ spsm download table
 ```
 
-The terminal will prompt you to enter the name of the table you want to download. If you don't want to be prompted, you can enter the information with options.
+The terminal will prompt you to enter the information described above, necessary for all data downloads. Then you will be prompted to enter the name of the table you want to download.
+
+![download table](doc/img/download_table.png)
+
+If you don't want to be prompted, you can enter the information with options.
 
 ```console
 $ spsm download --username 'YOUR.USERNAME' --password YOUR-PASSWORD --download-directory /PATH/TO/FILE.csv table --table TABLE_NAME
