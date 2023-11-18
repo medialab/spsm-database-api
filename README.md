@@ -52,7 +52,9 @@ To download an entire table onto your computer and/or disk, run the following co
 $ spsm download table
 ```
 
-The terminal will prompt you to enter the information described above, necessary for all data downloads. Then you will be prompted to enter the name of the table you want to download.
+As described above, the terminal will prompt you to enter the information necessary for all types of data download.
+
+Then you will be prompted to enter the name of the table you want to download.
 
 ![download table](doc/img/download_table.png)
 
@@ -70,7 +72,7 @@ To download an entire table onto your computer and/or disk, run the following co
 $ spsm download columns
 ```
 
-First, as in the [`download table`](#download-an-entire-table) command, the terminal will prompt you to enter the name of the table you want to download.
+First, as in the [`spsm download table`](#download-an-entire-table) command, the terminal will prompt you to enter the name of the table you want to download.
 
 Then, you'll be asked to begin entering the columns you want to download.
 
