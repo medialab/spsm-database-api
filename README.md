@@ -66,7 +66,7 @@ $ spsm download --username 'YOUR.USERNAME' --password YOUR-PASSWORD --download-d
 
 ### Download select columns from a table
 
-To download an entire table onto your computer and/or disk, run the following command:
+To download only certain columns of a table, which might be a good idea if it has text columns and the file would otherwise be very big, run the following command:
 
 ```console
 $ spsm download columns
@@ -80,7 +80,7 @@ Then, you'll be asked to begin entering the columns you want to download.
 
 ## Local DuckDB database (for analysis)
 
-DuckDB is another SQL database manager, different from PostgreSQL. Wherease PostgreSQL is good for storing data, especially on a server, DuckDB is excellent at excuting queries. It's much faster than PostgreSQL and it's what's called an "embedded" system, like SQLite, which means it stores all of the database in a single file. Contrary to PostgreSQL, DuckDB doesn't use a server.
+[DuckDB](https://duckdb.org/) is another SQL database manager, different from PostgreSQL. Wherease PostgreSQL is good for storing data, especially on a server, DuckDB is excellent at executing queries. It's much faster than PostgreSQL and it's what's called an "embedded" system, like SQLite, which means it stores all of the database in a single file. Contrary to PostgreSQL, DuckDB doesn't use a server.
 
 For these reasons, it's a great solution for locally working with tables downloaded from the remote database. You can either save your work in a DuckDB database by saving it to a file on your computer, or you can work within your computer's memory and not generate any new files. The latter might be nice for quick queries using files you've downloaded, but once your query is done the database will disappear.
 
