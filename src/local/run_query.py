@@ -35,8 +35,12 @@ class ExecuteSQLFile:
                     "Path to SQL file",
                     type=click.Path(file_okay=True, dir_okay=False, path_type=Path),
                 )
-                if not self.query_file or not Path(self.query_file).is_file():
-                    raise FileNotFoundError(query_file)
+                while not Path(self.query_file).is_file():
+                    print("[red]File not found.")
+                    self.query_file = click.prompt(
+                        "Path to SQL file",
+                        type=click.Path(file_okay=True, dir_okay=False, path_type=Path),
+                    )
             self.generate_param_table()
 
             if not self.outfile:
@@ -110,11 +114,15 @@ class ExecuteSQLFile:
                     f"The relation '{table_in_query}' is not in your DuckDB database."
                 )
                 relation_file = Prompt.ask("Enter a filename for this relation")
+                while not Path(relation_file).is_file():
+                    print("[red]File not found.")
+                    relation_file = Prompt.ask(
+                        "Enter a valid filename for this relation"
+                    )
+
                 self.create_table(infile=relation_file, table_name=table_in_query)
 
     def create_table(self, infile: str, table_name: str):
-        if not Path(infile).is_file():
-            raise FileNotFoundError
         self.console.clear()
         print(
             Panel.fit(
@@ -128,7 +136,7 @@ class ExecuteSQLFile:
         CREATE = "CREATE TABLE %s AS SELECT * FROM read_csv_auto('%s', HEADER=True%s)"
         query = CREATE % (table_name, infile, compression)
         with Spinner as progress:
-            progress.add_task("Creating table")
+            progress.add_task(f"Creating table '{table_name}'")
             self.connection.execute(query)
         # self.print_table(table_name)
 
