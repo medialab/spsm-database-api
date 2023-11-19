@@ -9,7 +9,7 @@ Command-line tool for downloading data from the SPSM project's PostgreSQL databa
   - [Download an entire table](#download-an-entire-table)
   - [Download part of a table](#download-select-columns-from-a-table)
 - [Working with data locally](#local-duckdb-database-for-analysis)
-  - [Execute SQL file](#execute-query)
+  - [Execute SQL file](#execute-sql-file)
 
 ## Install the tool
 
@@ -80,34 +80,39 @@ Then, you'll be asked to begin entering the columns you want to download.
 
 ## Local DuckDB database (for analysis)
 
-[DuckDB](https://duckdb.org/) is another SQL database manager, different from PostgreSQL. Wherease PostgreSQL is good for storing data, especially on a server, DuckDB is excellent at executing queries. It's much faster than PostgreSQL and it's what's called an "embedded" system, like SQLite, which means it stores all of the database in a single file. Contrary to PostgreSQL, DuckDB doesn't use a server.
+[DuckDB](https://duckdb.org/) is another Database Management System (DBMS), different from PostgreSQL. Wherease PostgreSQL is great for reliably storing data and managing access, DuckDB is excellent at efficiently executing queries. DuckDB is [faster](https://duckdb.org/why_duckdb.html#fast-analytical-queries) than most other Database Management Systems, including PostgreSQL.
 
-For these reasons, it's a great solution for locally working with tables downloaded from the remote database. You can either save your work in a DuckDB database by saving it to a file on your computer, or you can work within your computer's memory and not generate any new files. The latter might be nice for quick queries using files you've downloaded, but once your query is done the database will disappear.
+### TPC-H benchmark <sup>1</sup>
 
-All of the `spsm local` commands require you to choose between creating a DuckDB database file or using your computer's memory. To do the first, provide the path to where you want this tool to generate a DuckDB file. A good file name is something like `spsm.duckdb`. To do the second, press `Enter` when prompted, which will use the default in-memory database.
+| query | duckdb (sec) | postgres (sec) |
+| ----- | ------------ | -------------- |
+| 1     | 0.03         | 1.12           |
+| 2     | 0.01         | 0.18           |
+| 3     | 0.02         | 0.21           |
+| 4     | 0.03         | 0.11           |
+| 5     | 0.02         | 0.13           |
+| 6     | 0.01         | 0.21           |
+| 7     | 0.04         | 0.20           |
+| 8     | 0.02         | 0.18           |
+| 9     | 0.05         | 0.61           |
+| 10    | 0.04         | 0.35           |
+| 11    | 0.01         | 0.07           |
+| 12    | 0.01         | 0.36           |
+| 13    | 0.04         | 0.32           |
+| 14    | 0.01         | 0.21           |
+| 15    | 0.03         | 0.46           |
+| 16    | 0.03         | 0.12           |
+| 17    | 0.05         | > 60.00        |
+| 18    | 0.08         | 1.05           |
+| 19    | 0.03         | 0.31           |
+| 20    | 0.05         | > 60.00        |
+| 21    | 0.09         | 0.35           |
+| 22    | 0.03         | 0.15           |
 
-```console
-$ spsm local COMMAND
-Path to the local DuckDB database. If you want to
-process everything in memory, without creating a
-file, press enter for the default path ":memory:".
-     [:memory:]:
-```
+<sup>1</sup> [Hannes Mühleisen (2022)](https://duckdb.org/2022/09/30/postgres-scanner.html)
 
-Once you've connected to the local DuckDB database, you'll be asked to start importing some of the CSV files you downloaded from the server / have locally on your computer.
+Furthermore, contrary to PostgreSQL, DuckDB is what's called an "in-process" DBMS and does not require a server. Everything is immediately accessible in a single file, which usually ends with the extension `.db`.
 
-```console
-Do you want to create a table form a CSV file? [y/N]: y
-```
+For these reasons, DuckDB is a great solution for locally working with tables you have previously downloaded from the remote database--and joining with CSV files you have on your computer. The only drawback is ensuring the tables you're working with locally are up to date with what's on the PostgreSQL server, but that's less of an issue in the SPSM project.
 
-You'll then be asked to provide (1) the name you want to give the table and (2) the path to the file from which you want to build the table.
-
-```console
-Do you want to create a table form a CSV file? [y/N]: y
-Table name: claims
-File path: downloads/claims_2023-11-15.csv.gz
-```
-
-This will insert a CSV file with headers and a comma as the delimiter.
-
-### Execute query
+### Execute SQL file
