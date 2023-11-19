@@ -6,20 +6,24 @@ It takes advantage of 2 different Database Management Systems (DBMS) to do 2 dif
 
 <table>
   <tr>
-    <th>Data storage</th>
-    <th>Data manipulation</th>
+    <th>Task</th>
+    <td>Access</td>
+    <td>Analysis</td>
   </tr>
   <tr>
-    <td><img src="doc/img/postgres.png" alt="postgres" style="height:50px;"/></td>
-    <td><img src="doc/img/duckdb.png" alt="postgres" style="height:40px;"/></td>
+    <th>Solution</th>
+    <td><a href="https://www.postgresql.org"><img src="doc/img/postgres.png" alt="postgres" style="height:50px;"/></a></td>
+    <td><a href="https://duckdb.org/"><img src="doc/img/duckdb.png" alt="postgres" style="height:40px;"/></a></td>
   </tr>
   <tr>
+    <th>Command</th>
     <td><code>spsm download SUBCOMMAND</code></td>
     <td><code>spsm duckdb SUBCOMMAND</code></td>
   </tr>
   <tr>
-    <td>From the server, using your access, securely download data to your computer.</td>
-    <td>Using DuckDB's vectorized query execution, efficiently manipulate the data (or join with other CSV files) on your computer.</td>
+    <th>Explanation</th>
+    <td>PostgreSQL is great at reliably storing data and managing access.</td>
+    <td>DuckDB is great at efficiently executing queries. Plus, it's an "embedded" DBMS, so while working with it on your computer (rather than a server) you can easily join / introduce other CSV files you have locally on your computer.</td>
   </tr>
 </table>
 
