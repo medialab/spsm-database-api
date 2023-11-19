@@ -2,13 +2,34 @@
 
 Command-line tool for downloading data from the SPSM project's PostgreSQL database server.
 
+It takes advantage of 2 different Database Management Systems (DBMS) to do 2 different types of tasks.
+
+<table>
+  <tr>
+    <th>Data storage</th>
+    <th>Data manipulation</th>
+  </tr>
+  <tr>
+    <td><img src="doc/img/postgres.png" alt="postgres" style="height:50px;"/></td>
+    <td><img src="doc/img/duckdb.png" alt="postgres" style="height:40px;"/></td>
+  </tr>
+  <tr>
+    <td><code>spsm download SUBCOMMAND</code></td>
+    <td><code>spsm duckdb SUBCOMMAND</code></td>
+  </tr>
+  <tr>
+    <td>From the server, using your access, securely download data to your computer.</td>
+    <td>Using DuckDB's vectorized query execution, efficiently manipulate the data (or join with other CSV files) on your computer.</td>
+  </tr>
+</table>
+
 ## Table of contents
 
 - [Installation](#install-the-tool)
-- [Downloading from remote database](#remote-postgresql-database-for-export) <img src="doc/img/postgres.png" alt="postgres" style="height:12px;"/>
+- [Downloading from remote database](#download-data)
   - [Download an entire table](#download-an-entire-table)
   - [Download part of a table](#download-select-columns-from-a-table)
-- [Working with data locally](#local-duckdb-database-for-analysis) <img src="doc/img/duckdb.png" alt="postgres" style="height:12px;"/>
+- [Working with data locally](#local-duckdb-database-for-analysis)
   - [Execute SQL file](#execute-sql-file)
 
 ## Install the tool
@@ -28,8 +49,6 @@ $ spsm --help
 ```
 
 ## Download data
-
-<img src="doc/img/postgres.png" alt="postgres" style="height:32px;"/>
 
 For downloading data from the project's secure PostgreSQL server, you'll need two things:
 
@@ -81,8 +100,6 @@ Then, you'll be asked to begin entering the columns you want to download.
 ![download columns](doc/img/download_columns.gif)
 
 ## Local DuckDB database (for analysis)
-
-<img src="doc/img/duckdb.png" alt="postgres" style="height:32px;"/>
 
 [DuckDB](https://duckdb.org/) is another Database Management System (DBMS), different from PostgreSQL. Whereas PostgreSQL is great for reliably storing data and managing access, DuckDB is excellent at efficiently executing queries. DuckDB is [faster](https://duckdb.org/why_duckdb.html#fast-analytical-queries) than most other Database Management Systems, including PostgreSQL.
 
