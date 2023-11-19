@@ -80,7 +80,7 @@ Then, you'll be asked to begin entering the columns you want to download.
 
 ## Local DuckDB database (for analysis)
 
-[DuckDB](https://duckdb.org/) is another Database Management System (DBMS), different from PostgreSQL. Wherease PostgreSQL is great for reliably storing data and managing access, DuckDB is excellent at efficiently executing queries. DuckDB is [faster](https://duckdb.org/why_duckdb.html#fast-analytical-queries) than most other Database Management Systems, including PostgreSQL.
+[DuckDB](https://duckdb.org/) is another Database Management System (DBMS), different from PostgreSQL. Whereas PostgreSQL is great for reliably storing data and managing access, DuckDB is excellent at efficiently executing queries. DuckDB is [faster](https://duckdb.org/why_duckdb.html#fast-analytical-queries) than most other Database Management Systems, including PostgreSQL.
 
 ### TPC-H benchmark <sup>1</sup>
 
