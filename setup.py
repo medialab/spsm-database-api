@@ -21,6 +21,8 @@ setup(
         "rich==13.6.0",
         "sqlalchemy==2.0.23",
         "typing-extensions==4.8.0",
+        "sql-metadata==2.10.0",
+        "sqlparse==0.4.4",
     ],
     entry_points={
         "console_scripts": ["spsm=src.main:cli"],

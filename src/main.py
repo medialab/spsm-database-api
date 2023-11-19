@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import click
 
 from src.connect import connect_to_database
@@ -9,8 +11,8 @@ from src.constants import (
 from src.download.download_columns import DownloadColumns
 from src.download.download_params import DownloadParams
 from src.download.download_table import DownloadTable
-from src.local.run_query import execute_query
-from src.local.setup_db import DB
+from src.local.run_query import ExecuteSQLFile
+from src.local.setup_db import create_connection
 
 
 @click.group()
@@ -76,38 +78,26 @@ def download_select_columns(ctx, table):
 
 
 # ---------------------------------------- #
-# ------------- LOCAL COMMAND ------------ #
-@cli.group("local")
-@click.option(
-    "--database",
-    type=str,
-    required=False,
-    show_default=True,
-)
+# ------------- DUCKDB COMMAND ----------- #
+@cli.group("duckdb")
+@click.option("--database", type=str)
 @click.pass_context
-def local(ctx, database):
+def duckdb(ctx, database):
     ctx.ensure_object(dict)
-    db = DB(db_path=database)
-    ctx.obj["DUCKDB_DB"] = db
+    connection = create_connection(db_path=database)
+    ctx.obj["DUCKDB_CONNECTION"] = connection
 
 
-# ------------- LOCAL COMMAND ------------ #
+# ------------- DUCKDB COMMAND ----------- #
 # ----------- QUERY SUBCOMMAND ----------- #
-@local.command()
-@click.option(
-    "--query",
-    prompt="Path to SQL file",
-    type=click.Path(file_okay=True, dir_okay=False),
-)
-@click.option(
-    "--outfile",
-    prompt="Path to out-file",
-    type=click.Path(file_okay=True, dir_okay=False),
-)
+@duckdb.command()
+@click.option("--query")
+@click.option("--outfile")
 @click.pass_context
 def query(ctx, query, outfile):
-    db = ctx.obj["DUCKDB_DB"]
-    execute_query(query_file=query, db=db, outfile=outfile)
+    executor = ExecuteSQLFile(query_file=query, outfile=outfile)
+    connection = ctx.obj["DUCKDB_CONNECTION"]
+    executor(connection=connection)
 
 
 if __name__ == "__main__":
