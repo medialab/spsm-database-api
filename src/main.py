@@ -93,11 +93,19 @@ def duckdb(ctx, database):
 @duckdb.command()
 @click.option("--query")
 @click.option("--outfile")
+@click.option(
+    "--table",
+    multiple=True,
+    nargs=2,
+    type=(str, click.Path(file_okay=True, dir_okay=False)),
+    help="Provide 2 arguments: (1) name of the relation/table, (2) path to CSV file",
+)
 @click.pass_context
-def query(ctx, query, outfile):
+def query(ctx, query, outfile, table):
+    tables = {t[0]: t[1] for t in table}
     executor = ExecuteSQLFile(query_file=query, outfile=outfile)
     connection = ctx.obj["DUCKDB_CONNECTION"]
-    executor(connection=connection)
+    executor(connection=connection, tables=tables)
 
 
 if __name__ == "__main__":
