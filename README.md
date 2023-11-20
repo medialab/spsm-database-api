@@ -35,6 +35,7 @@ It takes advantage of 2 different Database Management Systems (DBMS) to do 2 dif
   - [Download part of a table](#download-select-columns-from-a-table)
 - [Working with data locally](#local-duckdb-database-for-analysis)
   - [Execute SQL file](#execute-sql-file)
+  - [Experiment in Notebook](#launch-jupyter-notebook)
 
 ## Install the tool
 
