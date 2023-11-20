@@ -145,7 +145,7 @@ For these reasons, DuckDB is a great solution for locally working with tables yo
 To execute the query saved in an SQL file, call the `query` subcommand.
 
 ```console
-spsm duckdb query
+$ spsm duckdb query
 ```
 
 First, the terminal will ask if you want to save the database to a file, which will preserve data imports for later use. If you do not want to create a database file, DuckDB will process everything in-memory.
@@ -157,9 +157,31 @@ Once the program reads the provided SQL query, it will search for the referenced
 If you don't want to be prompted, you can provide the relations' names and their data files directly as options after the command.
 
 ```console
-spsm duckdb --database ":memory:" query --query query.sql  --outfile output.csv --table claims downloads/claims.csv --table dataset_de_facto downloads/dataset_de_facto.csv
+$ spsm duckdb --database ":memory:" query --query query.sql  --outfile output.csv --table claims downloads/claims.csv --table dataset_de_facto downloads/dataset_de_facto.csv
 ```
 
 In the example below, you see that (1) we are working with a new, in-memory DuckDB database, which has no prior tables, and (2) the provided SQL query requires the tables `claims` and `dataset_de_facto`. Using the commands above (i.e. [`spsm download table`](#download-data)), we have these referenced tables saved in a folder named `./downloads`. The example shows how, having parsed the query in the provided SQL file (`./query.sql`), the program sequentially asks us to provide these files and then proceeds to create tables in the in-memory database containing their rows and columns. Finally, after preparing the database, the program executes the query and writes the result to the given out-file (`./output.csv`).
 
 ![duckdb execute sql file](doc/img/execute_query.gif)
+
+### Launch Jupyter notebook
+
+To experiment with SQL queries, run `spsm duckdb notebook` and launch a Jupyter notebook. To provide access to relevant files, including CSV files and/or a DuckDB file, you should provide the path to a directory. If you don't provide a path, the notebook's workspace will be launched from wherever you run the command. Finally, if the directory from which the notebook is launched doesn't already have a Jupyter notebook file, one will be created using the same database configuration provided with all `spsm duckdb` commands, as described above. If the directory already has a Jupyter notebook but you want to create a new one anyway, provide a path with the option "--new".
+
+```console
+$ spsm duckdb --database './spsm.db' notebook --new 'Notebook.ipynb'
+```
+
+The above command would create a notebook in the current working directory, meaning the location from which the command is run. And it relies on an existant DuckDB database file in the same directory.
+
+```console
+./
+ |__ Notebook.ipynb
+ |__ spsm.db
+ |__ downloads/
+    |__ claims.csv
+    |__ selection_tweet.csv
+    |__ tweet_claim.csv
+```
+
+With the database configuration declared in the parent `spsm duckdb` command, the subcommand `spsm duckdb notebook` launches a Jupyter notebook with code blocks establishing a DuckDB connection already written in the notebook.

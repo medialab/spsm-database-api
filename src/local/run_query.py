@@ -96,9 +96,9 @@ class ExecuteSQLFile:
             progress.add_task(f"Creating table '{table_name}'")
             self.connection.execute(query)
 
-    def __call__(self, connection: DuckDBPyConnection, tables: Dict | None = None):
+    def __call__(self, db_path: str, tables: Dict | None = None):
         # Register the DuckDB database connection
-        self.connection = connection
+        self.connection = duckdb.connect(db_path)
 
         # Add tables to DuckDB database
         if not tables:
