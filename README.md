@@ -154,6 +154,12 @@ Then, the terminal will prompt you to provide the paths to (a) the SQL file in w
 
 Once the program reads the provided SQL query, it will search for the referenced tables (relations) in the DuckDB database. If it doesn't find them, you will be prompted to provide the paths to CSV files that contain this information.
 
+If you don't want to be prompted, you can provide the relations' names and their data files directly as options after the command.
+
+```console
+spsm duckdb --database ":memory:" query --query query.sql  --outfile output.csv --table claims downloads/claims.csv --table dataset_de_facto downloads/dataset_de_facto.csv
+```
+
 In the example below, you see that (1) we are working with a new, in-memory DuckDB database, which has no prior tables, and (2) the provided SQL query requires the tables `claims` and `dataset_de_facto`. Using the commands above (i.e. [`spsm download table`](#download-data)), we have these referenced tables saved in a folder named `./downloads`. The example shows how, having parsed the query in the provided SQL file (`./query.sql`), the program sequentially asks us to provide these files and then proceeds to create tables in the in-memory database containing their rows and columns. Finally, after preparing the database, the program executes the query and writes the result to the given out-file (`./output.csv`).
 
 ![duckdb execute sql file](doc/img/execute_query.gif)
