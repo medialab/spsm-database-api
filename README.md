@@ -167,7 +167,13 @@ In the example below, you see that (1) we are working with a new, in-memory Duck
 
 ### Launch Jupyter notebook
 
-To experiment with SQL queries, run `spsm duckdb notebook` and launch a Jupyter notebook. To provide access to relevant files, including CSV files and/or a DuckDB file, you should provide the path to a directory. If you don't provide a path, the notebook's workspace will be launched from wherever you run the command. Finally, if the directory from which the notebook is launched doesn't already have a Jupyter notebook file, one will be created using the same database configuration provided with all `spsm duckdb` commands, as described above. If the directory already has a Jupyter notebook but you want to create a new one anyway, provide a path with the option "--new".
+To experiment with SQL queries, run `spsm duckdb notebook` and launch a Jupyter notebook.
+
+```console
+$ spsm duckdb notebook
+```
+
+To provide access to relevant files, including CSV files and/or a DuckDB file, you should provide the path to a directory. If you don't provide a path, the notebook's workspace will be launched from wherever you run the command. Finally, if the directory from which the notebook is launched doesn't already have a Jupyter notebook file, one will be created using the same database configuration provided with all `spsm duckdb` commands, as described above. If the directory already has a Jupyter notebook but you want to create a new one anyway, provide a path with the option "--new".
 
 ```console
 $ spsm duckdb --database './spsm.db' notebook --new 'Notebook.ipynb'
