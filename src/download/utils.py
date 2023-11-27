@@ -62,13 +62,15 @@ class Download:
         console = Console()
         console.print(table)
 
-    def count_rows(self) -> int:
+    def count_rows(self, id_name: str) -> int:
         count = 0
         with self.engine.connect().execution_options(postgresql_readonly=True) as conn:
             with Spinner as progress:
                 progress.add_task("[yellow]Counting rows")
                 try:
-                    for res in conn.execute(select(func.count(self.table.c.id))):
+                    for res in conn.execute(
+                        select(func.count(getattr(self.table.c, id_name)))
+                    ):
                         count = res[0]
                 except KeyboardInterrupt:
                     pass
@@ -80,7 +82,10 @@ class Download:
 
     def select(self, statement: Select):
         headers = [c.name.split(".")[-1] for c in statement.columns]
-        self.count = self.count_rows()
+        id_name = "id"
+        if "science_feedback" in str(self.table.name):
+            id_name = "claim_appearance_id"
+        self.count = self.count_rows(id_name)
         with open(self.outfile, "w") as f, ProgressBar as progress:
             writer = csv.writer(f)
             writer.writerow(headers)
