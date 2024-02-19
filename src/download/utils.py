@@ -85,6 +85,8 @@ class Download:
         id_name = "id"
         if "science_feedback" in str(self.table.name):
             id_name = "claim_appearance_id"
+        if id_name not in headers:
+            id_name = headers[0]
         self.count = self.count_rows(id_name)
         with open(self.outfile, "w") as f, ProgressBar as progress:
             writer = csv.writer(f)
