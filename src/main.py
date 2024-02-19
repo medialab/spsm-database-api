@@ -11,9 +11,6 @@ from src.constants import (
 from src.download.download_columns import DownloadColumns
 from src.download.download_params import DownloadParams
 from src.download.download_table import DownloadTable
-from src.local.build_notebook import Notebook
-from src.local.run_query import ExecuteSQLFile
-from src.local.setup_db import create_connection
 
 
 @click.group()
@@ -76,47 +73,6 @@ def download_select_columns(ctx, table):
     DownloadColumns(
         engine=engine, table_name=table, download_directory=download_directory
     )
-
-
-# ---------------------------------------- #
-# ------------- DUCKDB COMMAND ----------- #
-@cli.group("duckdb")
-@click.option("--database", type=str)
-@click.pass_context
-def duckdb(ctx, database):
-    ctx.ensure_object(dict)
-    db_path = create_connection(db_path=database)
-    ctx.obj["DB_PATH"] = db_path
-
-
-# ------------- DUCKDB COMMAND ----------- #
-# ----------- QUERY SUBCOMMAND ----------- #
-@duckdb.command()
-@click.option("--query")
-@click.option("--outfile")
-@click.option(
-    "--table",
-    multiple=True,
-    nargs=2,
-    type=(str, click.Path(file_okay=True, dir_okay=False)),
-    help="Provide 2 arguments: (1) name of the relation/table, (2) path to CSV file",
-)
-@click.pass_context
-def query(ctx, query, outfile, table):
-    tables = {t[0]: t[1] for t in table}
-    executor = ExecuteSQLFile(query_file=query, outfile=outfile)
-    db_path = ctx.obj["DB_PATH"]
-    executor(db_path=db_path, tables=tables)
-
-
-@duckdb.command()
-@click.option("--dir", type=click.Path(file_okay=False, dir_okay=True))
-@click.option("--new", type=click.Path(file_okay=True, dir_okay=False))
-@click.pass_context
-def notebook(ctx, dir, new):
-    database_path = ctx.obj["DB_PATH"]
-    n = Notebook(dir=dir, new=new, database=database_path)
-    subprocess.run(["jupyter", "lab", "--preferred-dir", str(n.dir)])
 
 
 if __name__ == "__main__":
