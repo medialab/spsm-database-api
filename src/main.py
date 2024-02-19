@@ -4,6 +4,7 @@ from rich.console import Console
 from src.connect import connect_to_database
 from src.download import Downloader
 from src.params import ConnectionParams
+from src.uploader import Uploader
 
 
 @click.group()
@@ -23,10 +24,19 @@ def cli(ctx, username, password, database, host, port):
 
 # ----------- UPLOAD COMMAND ----------- #
 @cli.command("upload")
+@click.option(
+    "--table",
+    type=click.STRING,
+    help="Name of the table to download",
+)
+@click.option("--infile", type=click.Path(file_okay=True, dir_okay=False), help="")
+@click.option("--mapping", type=click.Path(file_okay=True, dir_okay=False))
 @click.pass_context
-def upload(ctx):
+def upload(ctx, table: str | None, infile: str | None, mapping: str | None):
     engine = ctx.obj["SQL_ENGINE"]
     console = ctx.obj["RICH_CONSOLE"]
+    uploader = Uploader(engine=engine, console=console, table_name=table)
+    uploader.create_table(infile=infile, mapping_yaml=mapping)
 
 
 # ----------- DOWNLOAD COMMAND ----------- #

@@ -1,14 +1,18 @@
 import csv
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Sequence, Tuple
 
+import casanova
 import click
 import yaml
 from rich.console import Console, Group
 from rich.panel import Panel
-from rich.prompt import Confirm, Prompt
+from rich.prompt import Confirm, InvalidResponse, Prompt
 from rich.table import Table as RichTable
 from sqlalchemy import Column, Engine, MetaData, Table, inspect
+
+from src.constants import Spinner
+from src.dynamic_sql import drop_table
 
 
 class ConnectionParams:
@@ -166,3 +170,79 @@ def outfile_param(outfile: str | None) -> Path:
             text="Outfile", type=click.Path(file_okay=True, dir_okay=False)
         )
     return Path(outfile)
+
+
+def new_table_param(console: Console, table_name: str | None, engine: Engine) -> str:
+    while not table_name:
+        proposed_new_table_name = Prompt.ask("[yellow]New table name", console=console)
+        tables_in_database = inspect(engine).get_table_names()
+        if proposed_new_table_name in tables_in_database:
+            console.print(
+                f"[red]\nThe table name '{proposed_new_table_name}' is already used in the database."
+            )
+            console.print("Current table names: ", sorted(tables_in_database))
+
+            # Check if the user wants to delete the table (if they have permission)
+            delete_the_table = Confirm.ask(
+                "Assuming you have permission, do you want to delete this table?"
+            )
+            if delete_the_table:
+                try:
+                    drop_table(proposed_new_table_name, engine)
+                except Exception as e:
+                    console.print("[red]You did not delete the table.")
+                    print(e)
+                else:
+                    console.print("[green]You deleted the table.")
+                    table_name = proposed_new_table_name
+
+        elif proposed_new_table_name.startswith(
+            ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+        ):
+            console.print(
+                f"[red]\nThe table name '{proposed_new_table_name}' starst with a number, which is prohibited in PostgreSQL.",
+                "\nPick a name that starts with a letter or an underscore.\n",
+            )
+        else:
+            table_name = proposed_new_table_name
+    return table_name
+
+
+def infile_params(console: Console, infile: str | None):
+    while not infile:
+        proposed_infile = Prompt.ask("[yellow]Data file", console=console)
+        if Path(proposed_infile).is_file():
+            infile = proposed_infile
+        else:
+            console.print("[red]File not found. Please enter a valid file.\n")
+    filepath = Path(infile)
+
+    with Spinner as p:
+        p.add_task("Counting file length")
+        total = casanova.count(filepath)
+
+    with open(filepath, "r") as f:
+        reader = casanova.reader(f)
+        headers = reader.fieldnames
+        if not headers:
+            raise KeyError("\nFile needs to have column headers.\n")
+        infile_columns = headers
+
+    return filepath, infile_columns, total
+
+
+def mapping_yaml_params(console: Console, mapping_yaml: str | None):
+    while not mapping_yaml:
+        proposed_filepath = Prompt.ask("[yellow]YAML mapping file", console=console)
+        if Path(proposed_filepath).is_file():
+            mapping_yaml = proposed_filepath
+        else:
+            console.print("[red]File not found. Please enter a valid file.\n")
+
+    with open(mapping_yaml, "r") as f:
+        yaml_data = yaml.safe_load(f)
+        primary_key = yaml_data["pk"]
+        columns = yaml_data["columns"]
+        if not primary_key in columns.keys():
+            raise KeyError("\nThe primary key needs to be one of the columns.\n")
+        return primary_key, columns

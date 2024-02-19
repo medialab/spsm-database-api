@@ -22,6 +22,8 @@ setup(
         "setuptools==65.5.0",
         "SQLAlchemy==2.0.27",
         "typing_extensions==4.9.0",
+        "casanova==2.0.2",
+        "ebbe==1.13.2",
     ],
     entry_points={
         "console_scripts": ["spsm=src.main:cli"],
