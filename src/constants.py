@@ -1,4 +1,23 @@
-POSTGRESQL_DB_NAME = "spsm-database"
-POSTGRESQL_REROUTED_PORT = 54321
-POSTGRESQL_REROUTED_HOST = "localhost"
+from rich.progress import (
+    BarColumn,
+    MofNCompleteColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
+
 PARTITION_SIZE = 10_000
+
+Spinner = Progress(
+    TextColumn("[progress.description]{task.description}"),
+    SpinnerColumn(),
+    TimeElapsedColumn(),
+)
+
+ProgressBar = Progress(
+    TextColumn("[progress.description]{task.description}"),
+    BarColumn(),
+    MofNCompleteColumn(),
+    TimeElapsedColumn(),
+)

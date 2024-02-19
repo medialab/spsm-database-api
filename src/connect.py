@@ -2,10 +2,10 @@ from rich.console import Console
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 
-from src.download.download_params import DownloadParams
+from src.params import ConnectionParams
 
 
-def connect_to_database(params: DownloadParams):
+def connect_to_database(params: ConnectionParams, console: Console):
     url = URL.create(
         drivername="postgresql",
         username=params.username,
@@ -20,7 +20,5 @@ def connect_to_database(params: DownloadParams):
     except Exception as e:
         raise e
     else:
-        console = Console()
-        console.clear()
         console.rule("[bold blue]Connected to the PostgreSQL database")
         return engine
