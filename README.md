@@ -99,7 +99,7 @@ Using this tool, you can create a new table in the database from a CSV file that
 
 Before you upload your new table data, you'll need to map the data's columns to data types. You'll also need to declare which column in your data contains unique values and is never empty, in other words, which one can serve as the new table's "primary key" column. (_Note: For the moment, the tool does not support composite primary keys, made from the combination of multiple columns._)
 
-The table schema needs to written in a user-friendly file format called YAML. At the root leve, the file contains 2 major pieces of information.
+The table schema needs to written in a human-readable file format called [YAML](https://www.redhat.com/en/topics/automation/what-is-yaml). At the root level (with no indentation), the YAML file contains the following 2 pieces of information.
 
 - `pk` : The name of the table's primary key column
 - `columns` : A list of _**all**_ the columns in the CSV / new table, paired with their data type. Below the root-level `columns`, the information is indented by 2 spaces.
