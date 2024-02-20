@@ -143,8 +143,33 @@ The simplest way to upload a new table is to enter the command `spsm upload`.
 
 <img src="doc/img/name_upload_files.png" alt="start connection" width=500>
 
-That's it! :tada: Once you've entered the file names, the tool will run some preliminary tests of the data you've input then it will try to upload it into the database. The validation tests include (a) making sure your YAML configuration file named all the columns that the tool identified in the CSV, and (b) making sure the primary column, which you declared in the YAML configuration file, does not have any cells that are empty in the CSV file.
+That's it! :tada: Once you've entered the file names, the tool will run some preliminary tests of the data you've input then it will try to upload it into the database.
 
 <img src="doc/img/finish_upload.png" alt="start connection" width=500>
 
-The validation tests do not include checking to see that the data you've included in the CSV file matches the data types you declared in the YAML configuration file. If this is the case, it's likely the script will crash with an `sqlalchemy.exc.StatementError`. For the moment, the only solution is to be more careful about making sure the data in the CSV looks like / can be parsed as the data types declared in the YAML configuration file.
+The validation tests include the following:
+
+- Test 1 : Making sure your YAML configuration file named all the columns that the tool identified in the CSV.
+
+  Using the following 2 files as examples, this test would fail because the YAML configuration file declares only 2, not all 3, of columns in the CSV file.
+
+  `table-schema.yml`
+
+  ```yaml
+  pk: id
+  columns:
+    id: int
+    name: varchar(250)
+  ```
+
+  `table-data.csv`
+
+  ```csv
+  id,name,date
+  1,John Oliver,2024-02-19 17:31:03.178218
+  2,Jon Stewart,2024-02-19 17:31:22.332499
+  ```
+
+- Test 2: Making sure the primary column, which you declared in the YAML configuration file, does not have any cells that are empty in the CSV file.
+
+The validation tests do not include checking to see that the data in the CSV file's columns matches the data types you declared in the YAML configuration file. If there is a discrepancy, it's likely the script will crash with an `sqlalchemy.exc.StatementError`. For the moment, the only solution is to be more careful about making sure the data in the CSV looks like / can be parsed as the data types declared in the YAML configuration file. As a general principle, the script should not be responsible for autonomously modifying your data to compensate for discrepancies between what you declare you want the table to look like (the YAML configuration file) and what data you provide to the table (the CSV file).
