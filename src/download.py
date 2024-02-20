@@ -2,6 +2,7 @@ import csv
 from typing import List
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.prompt import Confirm
 from sqlalchemy import Engine, Table, func, select
 from sqlalchemy.sql.expression import Select
@@ -47,9 +48,12 @@ class Downloader:
         # Count the table rows (for the progress bar's total)
         count_statement = select(func.count()).select_from(self.table)
         count = 0
-        with Spinner as p, self.engine.connect().execution_options(
+        with Spinner(
+            console=self.console
+        ) as p, self.engine.connect().execution_options(
             postgresql_readonly=True
         ) as cur:
+            self.console.print("")
             p.add_task("[yellow]Counting rows")
             try:
                 for result in cur.execute(count_statement):
@@ -66,9 +70,10 @@ class Downloader:
         self.console.print("{}\n".format(", ".join(self.headers)))
         outfile_path = outfile_param(outfile=outfile)
         total = self.count_rows()
-        with open(outfile_path, "w") as f, ProgressBar as p:
+        with open(outfile_path, "w") as f, ProgressBar(console=self.console) as p:
             writer = csv.writer(f)
             writer.writerow(self.headers)
+            self.console.print("")
             t = p.add_task("[green]Downloading", total=total)
             with self.engine.connect().execution_options(
                 postgresql_readonly=True, yield_per=PARTITION_SIZE
@@ -78,5 +83,5 @@ class Downloader:
                         writer.writerow(row)
                         p.advance(t)
         self.console.print(
-            f"\nFinished downloading table.\nFile: '{outfile_path.absolute()}'\n"
+            f"\nFinished downloading table.\nFind the written file here: '{outfile_path.absolute()}'\n"
         )

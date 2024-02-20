@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="spsm-database-api",
-    version="0.0.1",
+    version="0.0.2",
     description="Command-line interface for exporting data from SPSM database.",
     author="Kelly Christensen",
     keywords="postgresql",
@@ -24,6 +24,8 @@ setup(
         "typing_extensions==4.9.0",
         "casanova==2.0.2",
         "ebbe==1.13.2",
+        "numpy==1.26.4",
+        "pyarrow==15.0.0",
     ],
     entry_points={
         "console_scripts": ["spsm=src.main:cli"],

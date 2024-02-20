@@ -6,27 +6,17 @@ from sqlalchemy import (
     Column,
     Date,
     DateTime,
-    Engine,
     Float,
     Integer,
     Interval,
-    MetaData,
     String,
     Text,
 )
-from sqlalchemy.orm import DeclarativeBase, declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 
 class Base(DeclarativeBase):
     pass
-
-
-def drop_table(table_name: str, engine: Engine) -> None:
-    metadata = MetaData()
-    base = declarative_base()
-    table = metadata.tables.get(table_name)
-    if table is not None:
-        base.metadata.drop_all(engine, [table], checkfirst=True)
 
 
 class ColumnBuilder:

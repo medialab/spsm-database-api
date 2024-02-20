@@ -7,12 +7,16 @@ import click
 import yaml
 from rich.console import Console, Group
 from rich.panel import Panel
-from rich.prompt import Confirm, InvalidResponse, Prompt
+from rich.prompt import Confirm, Prompt
+from rich.style import Style
 from rich.table import Table as RichTable
+from rich.text import Text
 from sqlalchemy import Column, Engine, MetaData, Table, inspect
 
+from src.confirm_table_drop import confirm_table_deletion
 from src.constants import Spinner
-from src.dynamic_sql import drop_table
+
+PromptStyle = Style(color="white", blink=True, bold=True)
 
 
 class ConnectionParams:
@@ -173,8 +177,24 @@ def outfile_param(outfile: str | None) -> Path:
 
 
 def new_table_param(console: Console, table_name: str | None, engine: Engine) -> str:
+    # Check if the user's given table name is already in the database
+    if table_name in inspect(engine).get_table_names():
+        console.print(
+            f"[red]\nThe table name '{table_name}' is already used in the database."
+        )
+        console.print(
+            "Current table names: ", sorted(inspect(engine).get_table_names())
+        )
+
+        # Check if the user wants to delete the table (if they have permission)
+        if not confirm_table_deletion(
+            console=console, table_name=table_name, engine=engine
+        ):
+            table_name = None
     while not table_name:
-        proposed_new_table_name = Prompt.ask("[yellow]New table name", console=console)
+        proposed_new_table_name = Prompt.ask(
+            Text("\nNew table name", style=PromptStyle), console=console
+        )
         tables_in_database = inspect(engine).get_table_names()
         if proposed_new_table_name in tables_in_database:
             console.print(
@@ -183,18 +203,10 @@ def new_table_param(console: Console, table_name: str | None, engine: Engine) ->
             console.print("Current table names: ", sorted(tables_in_database))
 
             # Check if the user wants to delete the table (if they have permission)
-            delete_the_table = Confirm.ask(
-                "Assuming you have permission, do you want to delete this table?"
-            )
-            if delete_the_table:
-                try:
-                    drop_table(proposed_new_table_name, engine)
-                except Exception as e:
-                    console.print("[red]You did not delete the table.")
-                    print(e)
-                else:
-                    console.print("[green]You deleted the table.")
-                    table_name = proposed_new_table_name
+            if confirm_table_deletion(
+                console=console, table_name=proposed_new_table_name, engine=engine
+            ):
+                table_name = proposed_new_table_name
 
         elif proposed_new_table_name.startswith(
             ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
@@ -210,14 +222,16 @@ def new_table_param(console: Console, table_name: str | None, engine: Engine) ->
 
 def infile_params(console: Console, infile: str | None):
     while not infile:
-        proposed_infile = Prompt.ask("[yellow]Data file", console=console)
+        proposed_infile = Prompt.ask(
+            Text("\nData file", style=PromptStyle), console=console
+        )
         if Path(proposed_infile).is_file():
             infile = proposed_infile
         else:
             console.print("[red]File not found. Please enter a valid file.\n")
     filepath = Path(infile)
 
-    with Spinner as p:
+    with Spinner(console=console) as p:
         p.add_task("Counting file length")
         total = casanova.count(filepath)
 
@@ -233,7 +247,9 @@ def infile_params(console: Console, infile: str | None):
 
 def mapping_yaml_params(console: Console, mapping_yaml: str | None):
     while not mapping_yaml:
-        proposed_filepath = Prompt.ask("[yellow]YAML mapping file", console=console)
+        proposed_filepath = Prompt.ask(
+            Text("\nYAML mapping file", style=PromptStyle), console=console
+        )
         if Path(proposed_filepath).is_file():
             mapping_yaml = proposed_filepath
         else:
