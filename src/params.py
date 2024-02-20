@@ -143,7 +143,7 @@ class ColumnParamSelector:
         # Build table to show the columns already selected
         table_showing_selection = RichTable(title="Selected")
         table_showing_selection.add_column("Columns")
-        [table_showing_selection.add_row(c) for c in self.selected_column_names]
+        [table_showing_selection.add_row(c) for c in sorted(self.selected_column_names)]
 
         # Build table to show the columns not selected
         columns_to_choose_from = set(self.table_column_names).difference(
@@ -151,7 +151,7 @@ class ColumnParamSelector:
         )
         table_showing_not_selected = RichTable(title="Remaining")
         table_showing_not_selected.add_column("Columns")
-        [table_showing_not_selected.add_row(c) for c in columns_to_choose_from]
+        [table_showing_not_selected.add_row(c) for c in sorted(columns_to_choose_from)]
 
         # Group tables together and print
         panel_group = Group(
