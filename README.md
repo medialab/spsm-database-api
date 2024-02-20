@@ -97,9 +97,12 @@ Using this tool, you can create a new table in the database from a CSV file that
 
 ### Getting started
 
-Before you upload your new table data, you'll need to declare what type of data is in each column, as well as which column contains unique values and is never empty, in other words, it can serve as the table's "primary key".
+Before you upload your new table data, you'll need to map the data's columns to data types. You'll also need to declare which column in your data contains unique values and is never empty, in other words, which one can serve as the new table's "primary key" column. (_Note: For the moment, the tool does not support composite primary keys, made from the combination of multiple columns._)
 
-This declaration needs to written in a user-friendly file format called YAML, and it needs to contain 2 root-level items: the table's primary key (`pk`) and the table's columns (`columns`). Follow the example below, noting that each of the pairs of column name and data type under `columns` is indented with 2 spaces.
+The table schema needs to written in a user-friendly file format called YAML. At the root leve, the file contains 2 major pieces of information.
+
+- `pk` : The name of the table's primary key column
+- `columns` : A list of _**all**_ the columns in the CSV / new table, paired with their data type. Below the root-level `columns`, the information is indented by 2 spaces.
 
 `table-schema.yml`
 
@@ -111,7 +114,7 @@ columns:
   date: datetime
 ```
 
-In the YAML file, you'll need to (a) list every column in your CSV file / future new table, and (b) assign one of the following data types to the column:
+Each column must be assigned one of the following data types:
 
 - `int` or `integer`
 - `text`
