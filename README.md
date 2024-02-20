@@ -151,7 +151,7 @@ The validation tests include the following:
 
 - Test 1 : Making sure your YAML configuration file named all the columns that the tool identified in the CSV.
 
-  Using the following 2 files as examples, this test would fail because the YAML configuration file declares only 2, not all 3, of columns in the CSV file.
+  Using the following 2 files as examples, this test would fail because the YAML configuration file declares only 2, not all 3, of the columns in the CSV file.
 
   `table-schema.yml`
 
