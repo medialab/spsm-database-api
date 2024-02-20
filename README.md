@@ -16,7 +16,7 @@ Command-line tool for downloading data from the SPSM project's PostgreSQL databa
 3. With the environment activated, install this tool using the following command:
 
 ```console
-pip install git+https://github.com/medialab/spsm-database-api.git
+$ pip install git+https://github.com/medialab/spsm-database-api.git
 ```
 
 4. Test your installation with the below command. (It's normal if it takes 1-2 seconds for the tool to boot up / respond.)
